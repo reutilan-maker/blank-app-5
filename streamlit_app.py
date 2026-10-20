@@ -2,7 +2,7 @@ import streamlit as strl
 import math
 import requests
 import io
-from requirements.txt.pagesizes import letter
+from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
