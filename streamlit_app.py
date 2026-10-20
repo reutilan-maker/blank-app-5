@@ -225,3 +225,21 @@ if url_input:
     strl.subheader("📄 תצוגה מקדימה של דוח השימור הרשמי:")
     strl.code(report_content, language="text")
     
+strl.download_button(
+label="הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+data=report_content,
+file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
+mime="text/plain"
+)
+strl.markdown(
+"""
+
+
+© כל הזכויות שמורות לרעות אילן שפיק, 2026.
+
+קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב.
+
+
+""",
+unsafe_allow_html=True
+)
