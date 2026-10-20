@@ -3,7 +3,7 @@ import math
 import requests
 import re
 
-# פונקציית סריקת ה-SDS וחילוץ נתונים + חילוץ שם הנייר אוטומטית
+# פונקציית סריקת ה-SDS וחילוץ נתונים + חילוץ שם הנייר המעודכנת והמתוקנת
 def parse_sds_from_url(url):
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -12,29 +12,45 @@ def parse_sds_from_url(url):
         text_lower = text.lower()
         url_lower = url.lower()
         
+        # ערכי ברירת מחדל לחומר (רמת רגישות עליונה)
         x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
         extracted_name = "Archival Paper Standard"
         
-        title_match = re.search(r'<title>(.*?)</title>', text, re.IGNORECASE)
-        if title_match:
-            extracted_name = title_match.group(1).split('|').split('-').strip()
-        elif "klug" in url_lower:
-            extracted_name = "KLUG Photographic Archival Paper"
-        elif "preservationequipment" in url_lower or "pel" in text_lower:
-            extracted_name = "PEL Unbuffered Tissue Paper"
-        elif "thermal" in text_lower:
+        # 1. מנגנון חילוץ וסיווג חכם ומדוייק לפי מילות מפתח ומקור הקישור
+        if "thermal" in text_lower or "thermal" in url_lower or "receipt" in text_lower:
             extracted_name = "Appvion Thermal POS Paper"
-            
-        if "thermal" in text_lower or "safety-data-sheet" in url_lower:
             x_cellulose, x_lignin, x_acid = 0.80, 0.15, 0.05
-        elif "tissue" in text_lower or "pel" in text_lower:
+        elif "tissue" in text_lower or "tissue" in url_lower or "pel" in text_lower or "preservation" in url_lower:
+            extracted_name = "PEL Unbuffered Tissue Paper (16gsm)"
             x_cellulose, is_tissue = 1.0, True
+        elif "klug" in url_lower or "klug" in text_lower or "photographic" in text_lower or "photo" in url_lower:
+            extracted_name = "KLUG Photographic Archival Paper"
+            x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
+        else:
+            # ניסיון חילוץ מתגית הכותרת של האתר במידה וזה מותג לא מוכר
+            title_match = re.search(r'<title>(.*?)</title>', text, re.IGNORECASE)
+            if title_match:
+                extracted_name = title_match.group(1).strip()
             
         return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name
     except:
-        return 1.0, 0.0, 0.0, False, "Unknown SDS Paper"
+        # במקרה שהאתר חסם את הסריקה - זיהוי בסיסי חלופי לפי הכתובת בלבד
+        url_lower = url.lower()
+        x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
+        extracted_name = "Archival Paper Standard"
+        
+        if "thermal" in url_lower:
+            extracted_name = "Thermal POS Paper"
+            x_cellulose, x_lignin, x_acid = 0.80, 0.15, 0.05
+        elif "tissue" in url_lower or "pel" in url_lower or "preservationequipment" in url_lower:
+            extracted_name = "PEL Unbuffered Tissue Paper"
+            x_cellulose, is_tissue = 1.0, True
+        elif "klug" in url_lower:
+            extracted_name = "KLUG Photographic Archival Paper"
+            
+        return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name
 
-# חישוב המשוואות הקינטיות (ארניוס, בוטשר, איירינג ו-GAB)
+# חישוב המשוואות הקינטיות (ארניוס, בוטשר, איירינג ו-GAB) הכולל פקטור 15% חמצן מובנה
 def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissue):
     R, T = 8.314, temp_c + 273.15
     Ea_total = (x_cellulose * 110000) + (x_lignin * 80000) - (15000 if x_acid > 0 else 0)
@@ -46,13 +62,19 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     ln_k_ref = math.log(A) - (Ea_total / (R * 293.15)) + ((0.03 if not is_tissue else 0.042) * 1.0)
     k_relative = math.exp(ln_k - ln_k_ref)
     
+    # הגדרת בסיס תוחלת החיים לחלון ביטחון מוחלט (רגישות מקסימלית)
     base_lifetime = 200 if not is_tissue else 120
     if x_lignin > 0 or x_acid > 0: base_lifetime = 5
     
-    return k_relative, base_lifetime / k_relative, base_lifetime / (k_relative * (15 / 21)), Ea_total
+    # חישוב השנים המדויק באוויר רגיל לעומת רידוד חמצן ל-15% (פקטור קבוע של 15/21)
+    k_hypoxic = k_relative * (15.0 / 21.0)
+    years_21 = base_lifetime / k_relative
+    years_15 = base_lifetime / k_hypoxic
+    
+    return k_relative, k_hypoxic, years_21, years_15, Ea_total
 
-# פונקציית ייצוא קובץ טקסט/דוח
-def generate_text_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
+# פונקציית ייצוא קובץ טקסט/דוח מעודכנת הכוללת את נתוני ה-15% המתוקנים
+def generate_text_report(paper_name, url, temp, rh, k_rel, k_hyp, yrs_21, yrs_15, ea):
     report = f"""==================================================
 ARCHIVAL CONSERVATION & DEGRADATION REPORT
 ==================================================
@@ -74,7 +96,7 @@ Relative Humidity (RH) : {rh} %
   -> Absolute Safety Window      : {int(yrs_21)} Years
 
 * Hypoxic Controlled Atmosphere (15% O2):
-  -> Relative Oxidation Rate (k): {k_rel * (15/21):.4f}
+  -> Relative Oxidation Rate (k): {k_hyp:.4f}
   -> Absolute Safety Window      : {int(yrs_15)} Years
 
 ==================================================
@@ -132,7 +154,6 @@ strl.markdown(
         text-align: right !important;
         direction: RTL !important;
     }
-    /* עיצוב ייחודי לפסקת זכויות היוצרים בתחתית */
     .copyright-box {
         background-color: #F7FAFC;
         border-right: 4px solid #2C5282;
@@ -145,19 +166,24 @@ strl.markdown(
     unsafe_allow_html=True
 )
 
-strl.title("Re-Oot אפליקציית חישוב קצב התחמצנות לנייר ארכיוני")
+strl.title("Re-Oot אפליקציית חישוב קצב התחמצנות נייר לארכיונים")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
+# תיבת קלט ראשית לקישור ה-SDS בחלק העליון
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
 
+# הרצת הסריקה ברגע שהקישור מוזן כדי לחלץ את שם הנייר האוטומטי
 x_cell, x_lig, x_ac, is_tiss, auto_paper_name = parse_sds_from_url(url_input)
+
+# שדה שם הנייר מתעדכן כעת דינמית על בסיס תוצאת הסריקה מה-SDS
 paper_name_input = strl.text_input("שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):", value=auto_paper_name)
 
+# הגדרת ערכי ברירת מחדל מעודכנים לפי מתווה מחסן הקיץ הישראלי החדש שקבעת (30 מעלות ו-70% לחות)
 temp_input = strl.slider("טמפרטורת המחסן בדיקה (°C)", 10, 45, 30)
 rh_input = strl.slider("לחות יחסית במחסן (RH%)", 10, 90, 70)
 
 if url_input:
-    k_rel, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss)
+    k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss)
     
     strl.subheader(" חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):")
     col1, col2 = strl.columns(2)
@@ -168,20 +194,20 @@ if url_input:
         strl.markdown("### 🟩 מחסן מרודד חמצן (15%)")
         strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_15)} שנים")
         
-    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, yrs_21, yrs_15, ea_total)
+    # הפקת דוח הטקסט הרשמי והצגתו הכולל את התיקונים הקינטיים
+    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total)
     
     strl.markdown("---")
     strl.subheader("📄 תצוגה מקדימה של דוח השימור הרשמי:")
     strl.code(report_content, language="text")
     
     strl.download_button(
-        label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+        label=" הורדת דוח שימור רשמי + נספח מדעי (TXT)",
         data=report_content,
         file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
         mime="text/plain"
     )
 
-# 🔒 הזרקת תיבת ההצהרה המשפטית וזכויות היוצרים בתחתית הדף
 strl.markdown(
     """
     <div class="copyright-box">
@@ -193,4 +219,3 @@ strl.markdown(
     """,
     unsafe_allow_html=True
 )
-
