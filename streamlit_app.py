@@ -12,15 +12,12 @@ def parse_sds_from_url(url):
         text_lower = text.lower()
         url_lower = url.lower()
         
-        # ערכי ברירת מחדל לחומר
         x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
         extracted_name = "Archival Paper Standard"
         
-        # 1. חילוץ אוטומטי של שם הנייר מתוך ה-SDS (מזהה תגיות כותרת או כתובות אתר)
         title_match = re.search(r'<title>(.*?)</title>', text, re.IGNORECASE)
         if title_match:
-            # מנקה רווחים ותווים מיותרים משם הנייר שנמצא ב-SDS
-            extracted_name = title_match.group(1).split('|')[0].split('-')[0].strip()
+            extracted_name = title_match.group(1).split('|').split('-').strip()
         elif "klug" in url_lower:
             extracted_name = "KLUG Photographic Archival Paper"
         elif "preservationequipment" in url_lower or "pel" in text_lower:
@@ -28,7 +25,6 @@ def parse_sds_from_url(url):
         elif "thermal" in text_lower:
             extracted_name = "Appvion Thermal POS Paper"
             
-        # 2. סיווג כימי של החומר
         if "thermal" in text_lower or "safety-data-sheet" in url_lower:
             x_cellulose, x_lignin, x_acid = 0.80, 0.15, 0.05
         elif "tissue" in text_lower or "pel" in text_lower:
@@ -55,7 +51,7 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     
     return k_relative, base_lifetime / k_relative, base_lifetime / (k_relative * (15 / 21)), Ea_total
 
-# פונקציית ייצוא קובץ טקסט/דוח מובנה ומעוצב בפורמט קריא אונליין
+# פונקציית ייצוא קובץ טקסט/דוח
 def generate_text_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
     report = f"""==================================================
 ARCHIVAL CONSERVATION & DEGRADATION REPORT
@@ -107,19 +103,40 @@ This analytical tool utilizes a multi-layered thermodynamic model:
 # ממשק המשתמש אונליין (Streamlit UI)
 strl.set_page_config(page_title="מחשבון חמצון נייר ארכיוני", layout="centered")
 
-# הזרקת קוד CSS כדי להפוך את כיוון האתר כולו לימין (RTL)
+# 🛠️ הזרקת קוד CSS מקיף לחיוב יישור ימינה (RTL) מלא על כל אלמנט באתר
 strl.markdown(
     """
     <style>
-    .main .block-container {
-        direction: RTL;
-        text-align: right;
+    /* יישור כל המכולה הראשית */
+    .main .block-container, html, body, [data-testid="stAppViewContainer"] {
+        direction: RTL !important;
+        text-align: right !important;
     }
-    div[data-testid="stMarkdownContainer"] p {
-        text-align: right;
+    /* יישור כותרות וטקסט חופשי */
+    h1, h2, h3, h4, h5, h6, p, span, div {
+        text-align: right !important;
     }
-    label[data-testid="stWidgetLabel"] p {
-        text-align: right;
+    /* יישור תוויות (Labels) של תיבות קלט וסליידרים */
+    label[data-testid="stWidgetLabel"] p, .stSlider label p, .stTextInput label p {
+        text-align: right !important;
+        direction: RTL !important;
+    }
+    /* תיקון כיוון הסליידרים והערכים הנספרים בהם */
+    div[data-testid="stSlider"] {
+        direction: LTR !important; /* משאיר את פס הגרירה משמאל לימין אך מיישר את הטקסט שלו מעליו */
+    }
+    div[data-testid="stSlider"] label {
+        direction: RTL !important;
+    }
+    /* יישור תיבות הטקסט */
+    input[data-testid="stTextInputRootElement"] {
+        direction: RTL !important;
+        text-align: right !important;
+    }
+    /* יישור כרטיסי המטריקה של השנים */
+    div[data-testid="stMetricValue"], div[data-testid="stMetricLabel"] {
+        text-align: right !important;
+        direction: RTL !important;
     }
     </style>
     """,
@@ -129,13 +146,9 @@ strl.markdown(
 strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
-# תיבת קלט ראשית לקישור ה-SDS בחלק העליון
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
 
-# הרצת הסריקה ברגע שהקישור מוזן כדי לחלץ את שם הנייר האוטומטי
 x_cell, x_lig, x_ac, is_tiss, auto_paper_name = parse_sds_from_url(url_input)
-
-# שדה שם הנייר מתעדכן כעת דינמית על בסיס תוצאת הסריקה מה-SDS, מיושר לימין וניתן לעריכה
 paper_name_input = strl.text_input("שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):", value=auto_paper_name)
 
 temp_input = strl.slider("טמפרטורת המחסן בדיקה (°C)", 10, 45, 30)
@@ -153,7 +166,6 @@ if url_input:
         strl.markdown("### 🟩 מחסן מרודד חמצן (15%)")
         strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_15)} שנים")
         
-    # הפקת דוח הטקסט הרשמי והצגתו
     report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, yrs_21, yrs_15, ea_total)
     
     strl.markdown("---")
@@ -166,4 +178,3 @@ if url_input:
         file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
         mime="text/plain"
     )
-
