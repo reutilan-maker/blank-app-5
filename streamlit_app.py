@@ -1,23 +1,8 @@
-import os
-import sys
-
-# פקודת עקיפה קשיחה שמכריחה את שרת הענן להתקין את רכיב ה-PDF במקום
-try:
-    import reportlab
-except ModuleNotFoundError:
-    os.system(f'"{sys.executable}" -m pip install reportlab')
-    import reportlab
-
 import streamlit as strl
 import math
 import requests
-import io
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
 
-# 1. פונקציית סריקת ה-SDS
+# פונקציית סריקת ה-SDS
 def parse_sds_from_url(url):
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -32,7 +17,7 @@ def parse_sds_from_url(url):
     except:
         return 1.0, 0.0, 0.0, False
 
-# 2. חישוב המשוואות הקינטיות
+# חישוב המשוואות הקינטיות (ארניוס, בוטשר, איירינג ו-GAB)
 def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissue):
     R, T = 8.314, temp_c + 273.15
     Ea_total = (x_cellulose * 110000) + (x_lignin * 80000) - (15000 if x_acid > 0 else 0)
@@ -49,88 +34,57 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     
     return k_relative, base_lifetime / k_relative, base_lifetime / (k_relative * (15 / 21)), Ea_total
 
-# 3. יצירת דוח ה-PDF עם הנספח המדעי המשולב
-def generate_pdf_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
-    story = []
-    
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('TitleStyle', parent=styles['Heading1'], fontSize=20, textColor=colors.HexColor('#1A365D'), spaceAfter=15)
-    section_style = ParagraphStyle('SectionStyle', parent=styles['Heading2'], fontSize=14, textColor=colors.HexColor('#2C5282'), spaceAfter=10, spaceBefore=10)
-    text_style = ParagraphStyle('TextStyle', parent=styles['Normal'], fontSize=10, leading=14, textColor=colors.HexColor('#2D3748'))
-    formula_style = ParagraphStyle('FormulaStyle', parent=styles['Code'], fontSize=9, leading=12, textColor=colors.HexColor('#1A202C'), leftIndent=20, spaceBefore=4, spaceAfter=4)
-    
-    # עמוד 1: תוצאות ומפרטים
-    story.append(Paragraph("Archival Conservation & Degradation Report", title_style))
-    story.append(Paragraph("Predictive modeling based on the dynamic humidity-corrected Arrhenius framework.", text_style))
-    story.append(Spacer(1, 15))
-    
-    story.append(Paragraph("1. Material Input Specifications", section_style))
-    input_data = [
-        [Paragraph("<b>Parameter</b>", text_style), Paragraph("<b>Value / Extraction Source</b>", text_style)],
-        ["Paper Identity / Brand", paper_name],
-        ["SDS Reference Link", url[:50] + "..."],
-        ["Calculated Activation Energy (Ea)", f"{ea/1000:.1f} kJ/mol"],
-        ["Testing Temperature", f"{temp} °C"],
-        ["Relative Humidity (RH)", f"{rh} %"]
-    ]
-    t1 = Table(input_data, colWidths=[200, 300])
-    t1.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (1,0), colors.HexColor('#E2E8F0')),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E0')),
-        ('PADDING', (0,0), (-1,-1), 5),
-    ]))
-    story.append(t1)
-    story.append(Spacer(1, 15))
-    
-    story.append(Paragraph("2. Predictive Safety Window (Time Before Acid Migration)", section_style))
-    result_data = [
-        [Paragraph("<b>Warehouse Environment</b>", text_style), Paragraph("<b>Oxidation Rate (k)</b>", text_style), Paragraph("<b>Absolute Safety Window</b>", text_style)],
-        ["Standard Atmosphere (21% O2)", f"{k_rel:.4f}", f"{int(yrs_21)} Years"],
-        ["Hypoxic Controlled Atmosphere (15% O2)", f"{k_rel * (15/21):.4f}", f"{int(yrs_15)} Years"]
-    ]
-    t2 = Table(result_data, colWidths=[200, 150, 150])
-    t2.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (2,0), colors.HexColor('#2C5282')),
-        ('TEXTCOLOR', (0,0), (2,0), colors.white),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E0')),
-        ('PADDING', (0,0), (-1,-1), 6),
-        ('BACKGROUND', (0,1), (-1,1), colors.HexColor('#F7FAFC')),
-        ('BACKGROUND', (0,2), (-1,2), colors.HexColor('#EDF2F7'))
-    ]))
-    story.append(t2)
-    
-    # מעבר עמוד אוטומטי לנספח המדעי
-    story.append(PageBreak())
-    
-    # עמוד 2: הנספח המדעי (Appendix)
-    story.append(Paragraph("Appendix: Theoretical Kinetic Framework", title_style))
-    story.append(Paragraph("This analytical tool utilizes a multi-layered thermodynamic and kinetic model to map out degradation pathways without manual laboratory accelerated aging trials:", text_style))
-    story.append(Spacer(1, 10))
-    
-    story.append(Paragraph("1. Böttcher's Additive Rule (Activation Energy Integration)", section_style))
-    story.append(Paragraph("Identifies composition fractions directly from Section 3 of the SDS to compute the specific activation energy boundary (Ea):", text_style))
-    story.append(Paragraph("<i>Ea_total = sum(x_i * Ea_i) - Delta_Ea_catalysis</i>", formula_style))
-    
-    story.append(Paragraph("2. Eyring-Polanyi Equation (Frequency Factor Evaluation)", section_style))
-    story.append(Paragraph("Resolves the molecular collision pre-exponential frequency factor (A) based on the structural entropy of activation (dS) related to the density and physical mass (e.g., 16gsm tissue vs. thick paper):", text_style))
-    story.append(Paragraph("<i>A = (kb * T / h) * exp(dS / R)</i>", formula_style))
-    
-    story.append(Paragraph("3. Guggenheim-Anderson-de Boer (GAB) Absorption Isotherm", section_style))
-    story.append(Paragraph("Translates ambient relative humidity (RH) into bound chemical water content to adjust the non-linear hydrolysis coefficient (B):", text_style))
-    story.append(Paragraph("<i>B = C_hydro * f(RH)</i>", formula_style))
-    
-    story.append(Paragraph("4. Humidity-Corrected Arrhenius Equation (Core Solution)", section_style))
-    story.append(Paragraph("Integrates all calculated sub-parameters and temperature matrices to output the final relative oxidation rate (k), which is further divided by the volumetric oxygen ratio to dictate wrapping shelf-life:", text_style))
-    story.append(Paragraph("<i>ln(k) = ln(A) - (Ea_total / R*T) + B * RH</i>", formula_style))
-    
-    doc.build(story)
-    buffer.seek(0)
-    return buffer
+# פונקציית ייצוא קובץ טקסט/דוח מובנה ומעוצב בפורמט קריא אונליין
+def generate_text_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
+    report = f"""==================================================
+ARCHIVAL CONSERVATION & DEGRADATION REPORT
+==================================================
+Generated via Arrhenius Predictive Kinetic Modeling
+Target Security: Absolute Safety Window (Museum Quality)
 
-# 4. ממשק המשתמש אונליין
-strl.set_page_config(page_title="מחשבון חמצון נייר", layout="centered")
+1. MATERIAL INPUT SPECIFICATIONS
+--------------------------------------------------
+Paper Identity / Brand : {paper_name}
+SDS Reference Link     : {url[:50]}...
+Calculated Activation Energy (Ea) : {ea/1000:.1f} kJ/mol
+Testing Temperature    : {temp} °C
+Relative Humidity (RH) : {rh} %
+
+2. PREDICTIVE SAFETY WINDOW (TIME BEFORE ACID MIGRATION)
+--------------------------------------------------
+* Standard Atmosphere (21% O2):
+  -> Relative Oxidation Rate (k): {k_rel:.4f}
+  -> Absolute Safety Window      : {int(yrs_21)} Years
+
+* Hypoxic Controlled Atmosphere (15% O2):
+  -> Relative Oxidation Rate (k): {k_rel * (15/21):.4f}
+  -> Absolute Safety Window      : {int(yrs_15)} Years
+
+==================================================
+APPENDIX: THEORETICAL KINETIC FRAMEWORK
+==================================================
+This analytical tool utilizes a multi-layered thermodynamic model:
+
+1. BOTTCHER'S ADDITIVE RULE (Activation Energy)
+   Extracts composition fractions from Section 3 of the SDS.
+   Formula: Ea_total = sum(x_i * Ea_i) - Delta_Ea_catalysis
+
+2. EYRING-POLANYI EQUATION (Frequency Factor Evaluation)
+   Resolves the molecular collision pre-exponential factor (A).
+   Formula: A = (kb * T / h) * exp(dS / R)
+
+3. GUGGENHEIM-ANDERSON-DE BOER (GAB) ABSORPTION ISOTHERM
+   Translates ambient relative humidity into bound chemical water.
+   Formula: B = C_hydro * f(RH)
+
+4. HUMIDITY-CORRECTED ARRHENIUS EQUATION (Core Solution)
+   Integrates all matrices to output final wrapping shelf-life.
+   Formula: ln(k) = ln(A) - (Ea_total / R*T) + B * RH
+=================================================="""
+    return report
+
+# ממשק המשתמש אונליין (Streamlit UI)
+strl.set_page_config(page_title="מחשבון חמצון נייר ארכיוני", layout="centered")
 strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
@@ -152,11 +106,17 @@ if url_input:
         strl.markdown("### 🟩 מחסן מרודד חמצן (15%)")
         strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_15)} שנים")
         
-    pdf_buffer = generate_pdf_report(paper_name_input, url_input, temp_input, rh_input, k_rel, yrs_21, yrs_15, ea_total)
+    # הפקת דוח הטקסט הרשמי והצגתו
+    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, yrs_21, yrs_15, ea_total)
+    
     strl.markdown("---")
+    strl.subheader("📄 תצוגה מקדימה של דוח השימור הרשמי:")
+    strl.code(report_content, language="text")
+    
     strl.download_button(
-        label="📥 הורדת דוח שימור רשמי + נספח מדעי (PDF)",
-        data=pdf_buffer,
-        file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.pdf",
-        mime="application/pdf"
+        label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+        data=report_content,
+        file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
+        mime="text/plain"
     )
+
