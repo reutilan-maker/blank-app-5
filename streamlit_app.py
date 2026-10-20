@@ -143,7 +143,7 @@ strl.markdown(
     unsafe_allow_html=True
 )
 
-strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
+strl.title("Re-oot - אפליקציית חישוב חמצון נייר ארכיוני")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
