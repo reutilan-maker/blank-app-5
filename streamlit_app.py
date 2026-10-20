@@ -103,47 +103,49 @@ This analytical tool utilizes a multi-layered thermodynamic model:
 # ממשק המשתמש אונליין (Streamlit UI)
 strl.set_page_config(page_title="מחשבון חמצון נייר ארכיוני", layout="centered")
 
-# 🛠️ הזרקת קוד CSS מקיף לחיוב יישור ימינה (RTL) מלא על כל אלמנט באתר
+# הזרקת קוד CSS מקיף לחיוב יישור ימינה (RTL) מלא על כל אלמנט באתר
 strl.markdown(
     """
     <style>
-    /* יישור כל המכולה הראשית */
     .main .block-container, html, body, [data-testid="stAppViewContainer"] {
         direction: RTL !important;
         text-align: right !important;
     }
-    /* יישור כותרות וטקסט חופשי */
     h1, h2, h3, h4, h5, h6, p, span, div {
         text-align: right !important;
     }
-    /* יישור תוויות (Labels) של תיבות קלט וסליידרים */
     label[data-testid="stWidgetLabel"] p, .stSlider label p, .stTextInput label p {
         text-align: right !important;
         direction: RTL !important;
     }
-    /* תיקון כיוון הסליידרים והערכים הנספרים בהם */
     div[data-testid="stSlider"] {
-        direction: LTR !important; /* משאיר את פס הגרירה משמאל לימין אך מיישר את הטקסט שלו מעליו */
+        direction: LTR !important; 
     }
     div[data-testid="stSlider"] label {
         direction: RTL !important;
     }
-    /* יישור תיבות הטקסט */
     input[data-testid="stTextInputRootElement"] {
         direction: RTL !important;
         text-align: right !important;
     }
-    /* יישור כרטיסי המטריקה של השנים */
     div[data-testid="stMetricValue"], div[data-testid="stMetricLabel"] {
         text-align: right !important;
         direction: RTL !important;
+    }
+    /* עיצוב ייחודי לפסקת זכויות היוצרים בתחתית */
+    .copyright-box {
+        background-color: #F7FAFC;
+        border-right: 4px solid #2C5282;
+        padding: 15px;
+        margin-top: 40px;
+        border-radius: 4px;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-strl.title("Re-oot - אפליקציית חישוב חמצון נייר ארכיוני")
+strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
@@ -178,3 +180,17 @@ if url_input:
         file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
         mime="text/plain"
     )
+
+# 🔒 הזרקת תיבת ההצהרה המשפטית וזכויות היוצרים בתחתית הדף
+strl.markdown(
+    """
+    <div class="copyright-box">
+        <p style="margin: 0; font-size: 13px; color: #2D3748; line-height: 1.6;">
+            <b>© כל הזכויות שמורות, 2026.</b><br>
+            קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
