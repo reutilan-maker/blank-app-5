@@ -1,3 +1,13 @@
+import os
+import sys
+
+# פקודת עקיפה קשיחה שמכריחה את שרת הענן להתקין את רכיב ה-PDF במקום
+try:
+    import reportlab
+except ModuleNotFoundError:
+    os.system(f'"{sys.executable}" -m pip install reportlab')
+    import reportlab
+
 import streamlit as strl
 import math
 import requests
@@ -65,7 +75,7 @@ def generate_pdf_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
         ["Testing Temperature", f"{temp} °C"],
         ["Relative Humidity (RH)", f"{rh} %"]
     ]
-    t1 = Table(input_data, colWidths=[220, 300])
+    t1 = Table(input_data, colWidths=[200, 300])
     t1.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (1,0), colors.HexColor('#E2E8F0')),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E0')),
@@ -80,7 +90,7 @@ def generate_pdf_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
         ["Standard Atmosphere (21% O2)", f"{k_rel:.4f}", f"{int(yrs_21)} Years"],
         ["Hypoxic Controlled Atmosphere (15% O2)", f"{k_rel * (15/21):.4f}", f"{int(yrs_15)} Years"]
     ]
-    t2 = Table(result_data, colWidths=[200, 140, 180])
+    t2 = Table(result_data, colWidths=[200, 150, 150])
     t2.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (2,0), colors.HexColor('#2C5282')),
         ('TEXTCOLOR', (0,0), (2,0), colors.white),
@@ -122,7 +132,7 @@ def generate_pdf_report(paper_name, url, temp, rh, k_rel, yrs_21, yrs_15, ea):
 # 4. ממשק המשתמש אונליין
 strl.set_page_config(page_title="מחשבון חמצון נייר", layout="centered")
 strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
-strl.markdown("מערכת אונליין לחישוב חלון הביطان המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
+strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
 paper_name_input = strl.text_input("שם הנייר / מותג לבדיקה:", value="KLUG Photographic Paper")
 url_input = strl.text_input("קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
