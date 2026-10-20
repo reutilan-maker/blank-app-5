@@ -145,7 +145,8 @@ strl.markdown(
     unsafe_allow_html=True
 )
 
-strl.title("🧪 אפליקציית חישוב חמצון נייר ארכיוני")
+strl.title("Re-Oot 
+אפליקציית חישוב חמצון נייר ארכיוני")
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):", value="https://klug-conservation.de")
@@ -159,7 +160,7 @@ rh_input = strl.slider("לחות יחסית במחסן (RH%)", 10, 90, 70)
 if url_input:
     k_rel, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss)
     
-    strl.subheader("📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):")
+    strl.subheader(" חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):")
     col1, col2 = strl.columns(2)
     with col1:
         strl.markdown("### 🟦 מחסן חמצן רגיל (21%)")
