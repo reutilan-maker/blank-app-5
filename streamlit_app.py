@@ -207,12 +207,12 @@ else:
 }
 current_labels = labels[lang]
 
-🏛️ 6. הדפסת כותרות הממשק הדו-לשוני על המסך
+# 6. הדפסת כותרות הממשק הדו-לשוני על המסך
 
 strl.title(current_labels["title"])
 strl.markdown(current_labels["sub"])
 
-🎛️ 7. שדות הקלט והסליידרים
+# 7. שדות הקלט והסליידרים
 
 paper_name_input = strl.text_input(current_labels["name_lbl"], value=auto_paper_name)
 temp_input = strl.slider(current_labels["temp_lbl"], 10, 45, 30)
