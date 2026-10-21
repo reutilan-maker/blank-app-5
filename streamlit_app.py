@@ -183,7 +183,7 @@ else:
         </style>
         """, unsafe_allow_html=True
     )
- labels = {
+    labels = {
     "title": "Re-Oot Archival Paper Oxidation & Degradation Calculator",
     "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
     "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
