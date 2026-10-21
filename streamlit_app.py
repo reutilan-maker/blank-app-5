@@ -237,7 +237,7 @@ file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain"
 )
 
-הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף
+#הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף
 
 strl.markdown(
 f"""
