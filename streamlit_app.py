@@ -154,21 +154,21 @@ if lang == "he":
         </style>
         """, unsafe_allow_html=True
     )
-    labels = {
-        "title": "Re-Oot אפליקציית חישוב קצב התחמצנות נייר לארכיונים",
-        "sub": "מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.",
-        "name_lbl": "שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):",
-        "temp_lbl": "טמפרטורת המחסן בדיקה (°C)",
-        "rh_lbl": "לחות יחסית במחסן (RH%)",
-        "res_lbl": " חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):",
-        "m1_lbl": "### 🟦 מחסן חמצן רגיל (21%)",
-        "m2_lbl": "### 🟩 מחסן מרודד חמצן (15%)",
-        "metric_lbl": "חלון זמן בטוח",
-        "preview_lbl": "📄 תצוגה מקדימה של דוח השימור הרשמי:",
-        "btn_lbl": " הורדת דוח שימור רשמי + נספח מדעי (TXT)",
-        "warn_text": f"⚠️ אזהרת שימור: הקישור שהוזן לא זוהה כנייר ארכיוני מאושר או שהציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף של פריטים יקרי ערך!",
-        "cr_text": "<b>© כל הזכויות שמורות לרעות אילן שפיק, 2026.</b><br>קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב."
-    }
+  labels = {
+    "title": "Re-Oot אפליקציית חישוב קצב התחמצנות נייר לארכיונים",
+    "sub": "מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.",
+    "name_lbl": "שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):",
+    "temp_lbl": "טמפרטורת המחסן בדיקה (°C)",
+    "rh_lbl": "לחות יחסית במחסן (RH%)",
+    "res_lbl": " חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):",
+    "m1_lbl": "### 🟦 מחסן חמצן רגיל (21%)",
+    "m2_lbl": "### 🟩 מחסן מרודד חמצן (15%)",
+    "metric_lbl": "חלון זמן בטוח",
+    "preview_lbl": "📄 תצוגה מקדימה של דוח השימור הרשמי:",
+    "btn_lbl": " הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+    "warn_text": f"⚠️ אזהרת שימור: הקישור שהוזן לא זוהה כנייר ארכיוני מאושר או שהציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף של פריטים יקרי ערך!",
+    "cr_text": "<b>© כל הזכויות שמורות לרעות אילן שפיק, 2026.</b><br>קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב."
+}
 else:
     strl.markdown(
         """
@@ -183,21 +183,20 @@ else:
         </style>
         """, unsafe_allow_html=True
     )
-    labels = {
-        "title": "Re-Oot Archival Paper Oxidation Rשאק Calculator",
-        "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
-        "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
-        "temp_lbl": "Testing Warehouse Temperature (°C)",
-        "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
-"res_lbl": " Absolute Safety Window For Wrapping (Years Before Acid Migration):",
-"m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
-"m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
-"metric_lbl": "Safety Window",
-"preview_lbl": "📄 Technical Conservation Report Preview:",
-"btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
-"warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
-"cr_text": """© All Rights Reserved to Reut Ilan Shafik, 2026.
-The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
+ labels = {
+    "title": "Re-Oot Archival Paper Oxidation & Degradation Calculator",
+    "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
+    "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
+    "temp_lbl": "Testing Warehouse Temperature (°C)",
+    "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
+    "res_lbl": " Absolute Safety Window For Wrapping (Years Before Acid Migration):",
+    "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
+    "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
+    "metric_lbl": "Safety Window",
+    "preview_lbl": "📄 Technical Conservation Report Preview:",
+    "btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
+    "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
+    "cr_text": "<b>© All Rights Reserved to Reut Ilan Shafik, 2026.</b><br>The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
 }
 current_labels = labels[lang]
 strl.title(current_labels["title"])
