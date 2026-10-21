@@ -207,7 +207,7 @@ if url_input:
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 # הקפצת חיוויי בטיחות רגישים (PAT) על בסיס הנתונים שחולצו
 if is_compliant and is_pat_certified:
-strl.markdown(
+    strl.markdown(
 f"""
 
 ✅ אישור הגנת מדיה: החומר עומד בתקן ISO 18916 (PAT Tested). בטוח לחלוטין לעיטוף ושימור של תצלומים צבעוניים ואמולסיות רגישות.
@@ -217,7 +217,7 @@ Media Protection Approved: Material complies with ISO 18916 (PAT Tested). Safe f
 """, unsafe_allow_html=True
 )
 elif is_compliant and not is_pat_certified:
-strl.markdown(
+    strl.markdown(
 f"""
 
 ⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר WITH תצלומים צבעוניים!
