@@ -57,7 +57,6 @@ def parse_sds_from_url(url, lang):
 def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissue, is_compliant):
     if not is_compliant:
         return 0.0, 0.0, 0.0, 0.0, 0.0
-
     R, T = 8.314, temp_c + 273.15
     Ea_total = (x_cellulose * 110000) + (x_lignin * 80000) - (15000 if x_acid > 0 else 0)
     dS = -60.0 if not is_tissue else -42.0
@@ -69,8 +68,6 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     k_relative = math.exp(ln_k - ln_k_ref)
     
     base_lifetime = 200 if not is_tissue else 120
-    if x_lignin > 0 or x_acid > 0: base_lifetime = 5
-    
     k_hypoxic = k_relative * (15.0 / 21.0)
     years_21 = base_lifetime / k_relative
     years_15 = base_lifetime / k_hypoxic
@@ -129,10 +126,16 @@ This analytical tool utilizes a multi-layered thermodynamic model:
     return report
 
 # ממשק המשתמש אונליין
-strl.set_page_config(page_title="מחשבון חמצון נייר ארכיוני", layout="centered")
+strl.set_page_config(page_title="מחשבון חמצון נייר / Paper Oxidation Calc", layout="centered")
 
-# בורר שפה ייעודי בראש העמוד
+# 🌍 בורר שפה ייעודי בראש העמוד
 lang = strl.radio("🌐 שפה / Language", ["עברית", "English"], horizontal=True)
+
+# תיבת קלט ראשית לקישור ה-SDS בחלק העליון - מוגדרת ראשונה כדי למנוע שגיאות משתנים!
+url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL) / Paste SDS URL here:", value="https://klug-conservation.de")
+
+# הרצת הסריקה המשופרת כדי לחלץ את הנתונים ואת השם אוטומטית לפני הגדרת ה-CSS והלייבלים
+x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant = parse_sds_from_url(url_input, lang)
 
 # הזרקת קוד CSS דינמי בהתאם לשפה שנבחרה (יישור ימין או שמאל)
 if lang == "עברית":
@@ -151,19 +154,18 @@ if lang == "עברית":
         """, unsafe_allow_html=True
     )
     labels = {
-        "title": "Re-Oot אפליקציית חישוב קצב חמצון נייר ארכיוני",
+        "title": "🧪 אפליקציית חישוב חמצון נייר ארכיוני",
         "sub": "מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.",
-        "url_lbl": "הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):",
         "name_lbl": "שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):",
         "temp_lbl": "טמפרטורת המחסן בדיקה (°C)",
         "rh_lbl": "לחות יחסית במחסן (RH%)",
-        "res_lbl": "חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):",
+        "res_lbl": "📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):",
         "m1_lbl": "### 🟦 מחסן חמצן רגיל (21%)",
         "m2_lbl": "### 🟩 מחסן מרודד חמצן (15%)",
         "metric_lbl": "חלון זמן בטוח",
         "preview_lbl": "📄 תצוגה מקדימה של דוח השימור הרשמי:",
-        "btn_lbl": "הורדת דוח שימור רשמי + נספח מדעי (TXT)",
-        "warn_text": "⚠️ אזהרת שימור: הקישור שהוזן לא זוהה כנייר ארכיוני מאושר או שהציג ערכים נחותים. החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף של פריטים יקרי ערך!",
+        "btn_lbl": "📥 הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+        "warn_text": f"⚠️ אזהרת שימור: הקישור שהוזן לא זוהה כנייר ארכיוני מאושר או שהציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף של פריטים יקרי ערך!",
         "cr_text": "<b>© כל הזכויות שמורות, 2026.</b><br>קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב."
     }
 else:
@@ -181,58 +183,55 @@ else:
         """, unsafe_allow_html=True
     )
     labels = {
-        "title": "Re-Oot Archival Paper Oxidation & Degradation rate Calculator",
+        "title": "🧪 Archival Paper Oxidation & Degradation Calculator",
         "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
-        "url_lbl": "Paste SDS or Technical Specification URL here:",
         "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
         "temp_lbl": "Testing Warehouse Temperature (°C)",
         "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
-        "res_lbl": "Absolute Safety Window For Wrapping (Years Before Acid Migration):",
-        "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
-        "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
-        "metric_lbl": "Safety Window",
-
+Use code with caution.
+"res_lbl": "📊 Absolute Safety Window For Wrapping (Years Before Acid Migration):",
+"m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
+"m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
+"metric_lbl": "Safety Window",
 "preview_lbl": "📄 Technical Conservation Report Preview:",
-"btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
+"btn_lbl": "📥 Download Conservation Report + Kinetic Appendix (TXT)",
 "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
-
-"cr_text": "<b>© All Rights Reserved to Reut Ilan Shafik, 2026.</b><br>The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
-
+"cr_text": "© All Rights Reserved, 2026.
+The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
 }
-strl.title(labels["title"])
-strl.markdown(labels["sub"])
-url_input = strl.text_input(labels["url_lbl"], value="klug-conservation.de")
+current_labels = labels[lang]
+strl.title(current_labels["title"])
+strl.markdown(current_labels["sub"])
 if url_input:
-    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant = parse_sds_from_url(url_input, lang)
-paper_name_input = strl.text_input(labels["name_lbl"], value=auto_paper_name)
-temp_input = strl.slider(labels["temp_lbl"], 10, 45, 30)
-rh_input = strl.slider(labels["rh_lbl"], 10, 90, 70)
+paper_name_input = strl.text_input(current_labels["name_lbl"], value=auto_paper_name)
+temp_input = strl.slider(current_labels["temp_lbl"], 10, 45, 30)
+rh_input = strl.slider(current_labels["rh_lbl"], 10, 90, 70)
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 if not is_compliant:
-    border_side = "border-right" if lang == "עברית" else "border-left"
+border_side = "border-right" if lang == "עברית" else "border-left"
 align_side = "right" if lang == "עברית" else "left"
 dir_side = "RTL" if lang == "עברית" else "LTR"
 strl.markdown(
 f"""
 
-{labels["warn_text"]}
+{current_labels["warn_text"]}
 
 """, unsafe_allow_html=True
 )
-strl.subheader(labels["res_lbl"])
+strl.subheader(current_labels["res_lbl"])
 col1, col2 = strl.columns(2)
 with col1:
-    strl.markdown(labels["m1_lbl"])
-strl.metric(label=labels["metric_lbl"], value=f"{int(yrs_21)} Years" if lang == "English" else f"{int(yrs_21)} שנים")
+strl.markdown(current_labels["m1_lbl"])
+strl.metric(label=current_labels["metric_lbl"], value=f"{int(yrs_21)} Years" if lang == "English" else f"{int(yrs_21)} שנים")
 with col2:
-    strl.markdown(labels["m2_lbl"])
-strl.metric(label=labels["metric_lbl"], value=f"{int(yrs_15)} Years" if lang == "English" else f"{int(yrs_15)} שנים")
+strl.markdown(current_labels["m2_lbl"])
+strl.metric(label=current_labels["metric_lbl"], value=f"{int(yrs_15)} Years" if lang == "English" else f"{int(yrs_15)} שנים")
 report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant)
 strl.markdown("---")
-strl.subheader(labels["preview_lbl"])
+strl.subheader(current_labels["preview_lbl"])
 strl.code(report_content, language="text")
 strl.download_button(
-label=labels["btn_lbl"],
+label=current_labels["btn_lbl"],
 data=report_content,
 file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain"
@@ -241,7 +240,7 @@ strl.markdown(
 f"""
 
 
-{labels["cr_text"]}
+{current_labels["cr_text"]}
 
 
 """, unsafe_allow_html=True
