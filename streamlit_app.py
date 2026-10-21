@@ -206,8 +206,7 @@ if url_input:
 
 strl.markdown('טמפרטורת המחסן בדיקה (°C):Testing Warehouse Temperature (°C):', unsafe_allow_html=True)
 temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_unique_slider")
-# סליידר לחות (ברירת מחדל לקיץ ישראלי 70% לחות)strl.markdown('
-לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
+# סליידר לחות (ברירת מחדל לקיץ ישראלי 70% לחות)strl.markdown('לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_unique_slider")
 # חישוב השנים במודל ארניוס המורחב
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
