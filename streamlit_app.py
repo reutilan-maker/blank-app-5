@@ -241,24 +241,46 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 
 """, unsafe_allow_html=True
 )
-# כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה ולייבל מקורי שלך
-strl.markdown("""
- חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
-#  תיבה מעוצבת דו-עמודית אחידה, מיושרת אופקית סימטרית למרכז עם סוגריים מוקטנים ל-14 פיקסלים
-strl.markdown(
-f"""
-🟦 מחסן חמצן רגיל
-Standard Atmosphere (21% O₂)
-חלון זמן בטוח / Safety Window
-{int(yrs_21)} שנים / Years
-
-🟩 מחסן מרודד חמצן
-Hypoxic Atmosphere (15% O₂)
-חלון זמן בטוח / Safety Window
-{int(yrs_15)} שנים / Years
-""", unsafe_allow_html=True
-)
-report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+    # כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה ולייבל מקורי שלך
+    strl.markdown("""<br><h3>📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):</h3><p class="sub-eng" style="margin-top:-10px;">Predicted Safety Window (Years Before Critical Acid Migration):</p>""", unsafe_allow_html=True)
+    
+    # הזרקת קוד יישור משני ממוקד המונע מהמספרים ומהמילים של ה-Metric להתהפך או להתפצל לשורות
+    strl.markdown(
+        """
+        <style>
+        div[data-testid="stMetricValue"] {
+            text-align: center !important;
+            direction: LTR !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 8px !important;
+            font-size: 34px !important;
+            font-weight: bold !important;
+        }
+        div[data-testid="stMetricLabel"] {
+            text-align: center !important;
+            font-size: 14px !important;
+            color: #718096 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True
+    )
+    
+    # הצגת התוצאות המקוריות והברורות אחת ליד השנייה בעמודות רשמיות ומיושרות למרכז
+    col1, col2 = strl.columns(2)
+    with col1:
+        strl.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+        strl.markdown('### 🟦 מחסן חמצן רגיל<br><span class="sub-eng" style="text-align:center; font-size:14px; font-weight:normal; margin-top:-5px;">Standard Atmosphere <span style="font-size:12px; color:#718096;">(21% O₂)</span></span>', unsafe_allow_html=True)
+        strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_21)} שנים / Years")
+        strl.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        strl.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+        strl.markdown('### 🟩 מחסן מרודד חמצן<br><span class="sub-eng" style="text-align:center; font-size:14px; font-weight:normal; margin-top:-5px;">Hypoxic Atmosphere <span style="font-size:12px; color:#718096;">(15% O₂)</span></span>', unsafe_allow_html=True)
+        strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_15)} שנים / Years")
+        strl.markdown('</div>', unsafe_allow_html=True)
+        
+    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
 strl.markdown("---")
 strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
 strl.code(report_content, language="text")
