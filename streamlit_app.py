@@ -131,7 +131,7 @@ strl.set_page_config(page_title="מחשבון חמצון נייר / Paper Oxidat
 # 🌍 בורר שפה ייעודי בראש העמוד
 lang = strl.radio("🌐 שפה / Language", ["עברית", "English"], horizontal=True)
 
-# תיבת קלט ראשית לקישור ה-SDS בחלק העליון - מוגדרת ראשונה כדי למנוע שגיאות משתנים!
+# תיבת קלט ראשית לקישור ה-SDS בחלק העליון
 url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפרט הטכני (URL) / Paste SDS URL here:", value="https://klug-conservation.de")
 
 # הרצת הסריקה המשופרת כדי לחלץ את הנתונים ואת השם אוטומטית לפני הגדרת ה-CSS והלייבלים
@@ -188,24 +188,17 @@ else:
         "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
         "temp_lbl": "Testing Warehouse Temperature (°C)",
         "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
-Use code with caution.
-"res_lbl": "📊 Absolute Safety Window For Wrapping (Years Before Acid Migration):",
-    labels = {
-        "title": "🧪 Archival Paper Oxidation & Degradation Calculator",
-        "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
-        "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
-        "temp_lbl": "Testing Warehouse Temperature (°C)",
-        "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
         "res_lbl": "📊 Absolute Safety Window For Wrapping (Years Before Acid Migration):",
-        "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
-        "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
-        "metric_lbl": "Safety Window",
-        "preview_lbl": "📄 Technical Conservation Report Preview:",
-        "btn_lbl": "📥 Download Conservation Report + Kinetic Appendix (TXT)",
-        "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
-        "cr_text": """<b>© All Rights Reserved, 2026.</b><br>The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
-     }
-
+Use code with caution.
+"m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
+"m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
+"metric_lbl": "Safety Window",
+"preview_lbl": "📄 Technical Conservation Report Preview:",
+"btn_lbl": "📥 Download Conservation Report + Kinetic Appendix (TXT)",
+"warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
+"cr_text": """© All Rights Reserved, 2026.
+The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
+}
 current_labels = labels[lang]
 strl.title(current_labels["title"])
 strl.markdown(current_labels["sub"])
