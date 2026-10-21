@@ -13,8 +13,6 @@ from urllib.parse import urljoin, urlparse
 import requests
 import streamlit as st
 
-from pypdf import PdfReader
-
 st.set_page_config(page_title="Re-Oot | Paper Conservation", layout="centered")
 
 LANG = st.radio("🌐 שפה / Language", ["עברית", "English"], horizontal=True)
