@@ -191,7 +191,7 @@ else:
         "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
         "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
         "metric_lbl": "Safety Window",
-Use code with caution.
+
 "preview_lbl": "📄 Technical Conservation Report Preview:",
 "btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
 "warn_text": "⚠️ CONSERVATION WARNING: The link provided was not recognized as an approved archival base or contained interior degradative elements. This material is NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
