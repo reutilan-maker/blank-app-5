@@ -197,13 +197,13 @@ if url_input:
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
     paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed")
-      # סליידר טמפרטורה
+     # סליידר טמפרטורה
     strl.markdown("""<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>""", unsafe_allow_html=True)
-    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed")
+    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_slider_unique")
     
     # סליידר לחות
     strl.markdown("""<br><b>לחות יחסית במחסן (RH%):</b><span class="sub-eng">Testing Warehouse Relative Humidity (RH%):</span>""", unsafe_allow_html=True)
-    rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
+    rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_slider_unique")
 
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
