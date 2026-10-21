@@ -204,7 +204,7 @@ Use code with caution.
         "btn_lbl": "📥 Download Conservation Report + Kinetic Appendix (TXT)",
         "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
         "cr_text": """<b>© All Rights Reserved, 2026.</b><br>The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
-    }
+     }
 
 current_labels = labels[lang]
 strl.title(current_labels["title"])
