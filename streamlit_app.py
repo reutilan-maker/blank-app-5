@@ -203,7 +203,6 @@ if url_input:
     temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed")
     
     # סליידר לחות
-Use code with caution.
 strl.markdown('
 לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
