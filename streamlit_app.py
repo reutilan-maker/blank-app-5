@@ -227,7 +227,7 @@ Notice: Substrate is archive-approved (ISO 9706) but lacks PAT evaluation. Avoid
 """, unsafe_allow_html=True
 )
 if not is_compliant:
-strl.markdown(
+    strl.markdown(
 f"""
 
 ⚠️ אזהרת שימור: הקישור שהוזן לא נמצא כעומד בתקן המעבדה הבינלאומי המאושר ISO 9706 או הציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף פריטים יקרי ערך!
