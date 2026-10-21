@@ -128,7 +128,7 @@ This analytical tool utilizes a multi-layered thermodynamic model:
 # ממשק המשתמש אונליין
 strl.set_page_config(page_title="מחשבון חמצון נייר / Paper Oxidation Calc", layout="centered")
 
-# 🌍 בורר שפה ייעודי בראש העמוד
+# בורר שפה ייעודי בראש העמוד
 lang = strl.radio("🌐 שפה / Language", ["עברית", "English"], horizontal=True)
 
 # תיבת קלט ראשית לקישור ה-SDS בחלק העליון
@@ -154,7 +154,7 @@ if lang == "עברית":
         """, unsafe_allow_html=True
     )
     labels = {
-        "title": "🧪 אפליקציית חישוב חמצון נייר ארכיוני",
+        "title": "Re-Oot אפליקציית חישוב קצב התחמצנות נייר ארכיוני",
         "sub": "מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.",
         "name_lbl": "שם הנייר / מותג (חולץ אוטומטית מה-SDS, ניתן לעריכה):",
         "temp_lbl": "טמפרטורת המחסן בדיקה (°C)",
@@ -183,18 +183,18 @@ else:
         """, unsafe_allow_html=True
     )
     labels = {
-        "title": "🧪 Archival Paper Oxidation & Degradation Calculator",
+        "title": "Re-Oot Archival Paper Oxidation Rate Calculator",
         "sub": "Online system for predicting the absolute safety window of wrapping materials based on Arrhenius kinetics.",
         "name_lbl": "Paper Identity / Brand (Auto-extracted from SDS, editable):",
         "temp_lbl": "Testing Warehouse Temperature (°C)",
         "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
-        "res_lbl": "📊 Absolute Safety Window For Wrapping (Years Before Acid Migration):",
+        "res_lbl": "Absolute Safety Window For Wrapping (Years Before Acid Migration):",
 
 "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
 "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
 "metric_lbl": "Safety Window",
 "preview_lbl": "📄 Technical Conservation Report Preview:",
-"btn_lbl": "📥 Download Conservation Report + Kinetic Appendix (TXT)",
+"btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
 "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
 "cr_text": """© All Rights Reserved, 2026.
 The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
