@@ -203,12 +203,12 @@ current_labels = labels[lang]
 strl.title(current_labels["title"])
 strl.markdown(current_labels["sub"])
 if url_input:
-paper_name_input = strl.text_input(current_labels["name_lbl"], value=auto_paper_name)
+    paper_name_input = strl.text_input(current_labels["name_lbl"], value=auto_paper_name)
 temp_input = strl.slider(current_labels["temp_lbl"], 10, 45, 30)
 rh_input = strl.slider(current_labels["rh_lbl"], 10, 90, 70)
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 if not is_compliant:
-border_side = "border-right" if lang == "עברית" else "border-left"
+    border_side = "border-right" if lang == "עברית" else "border-left"
 align_side = "right" if lang == "עברית" else "left"
 dir_side = "RTL" if lang == "עברית" else "LTR"
 strl.markdown(
@@ -221,10 +221,10 @@ f"""
 strl.subheader(current_labels["res_lbl"])
 col1, col2 = strl.columns(2)
 with col1:
-strl.markdown(current_labels["m1_lbl"])
+    strl.markdown(current_labels["m1_lbl"])
 strl.metric(label=current_labels["metric_lbl"], value=f"{int(yrs_21)} Years" if lang == "English" else f"{int(yrs_21)} שנים")
 with col2:
-strl.markdown(current_labels["m2_lbl"])
+    strl.markdown(current_labels["m2_lbl"])
 strl.metric(label=current_labels["metric_lbl"], value=f"{int(yrs_15)} Years" if lang == "English" else f"{int(yrs_15)} שנים")
 report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant)
 strl.markdown("---")
