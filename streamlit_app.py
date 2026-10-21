@@ -197,15 +197,14 @@ if url_input:
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
     paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed")
-    
-    # סליידר טמפרטורה
-    strl.markdown('<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>', unsafe_allow_html=True)
+      # סליידר טמפרטורה
+    strl.markdown("""<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>""", unsafe_allow_html=True)
     temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed")
     
     # סליידר לחות
-    # כותרת תוצאות שונות
-    strl.markdown("""<br><h3>📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):</h3><p class="sub-eng" style="margin-top:-10px;">Predicted Safety Window (Years Before Critical Acid Migration):</p>""", unsafe_allow_html=True)
-לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
+    strl.markdown("""<br><b>לחות יחסית במחסן (RH%):</b><span class="sub-eng">Testing Warehouse Relative Humidity (RH%):</span>""", unsafe_allow_html=True)
+    rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
+
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 # חיוויי בטיחות רגישים (PAT)
