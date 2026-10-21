@@ -264,18 +264,21 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
         """, unsafe_allow_html=True
     )
         
+    # הפקת תוכן הדוח הכתוב מתוך פונקציית הייצוא הכימית
     report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+    
+    strl.markdown("---")
+    strl.markdown('<b>📄 תצוגה מקדימה של דוח השימור הרשמי:</b><span class="sub-eng">Official Conservation Report Preview:</span>', unsafe_allow_html=True)
+    strl.code(report_content, language="text")
+    
+    strl.download_button(
+        label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
+        data=report_content,
+        file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
+        mime="text/plain",
+        key="download_button_unique"
+    )
 
-strl.markdown("---")
-strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
-strl.code(report_content, language="text")
-strl.download_button(
-label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
-data=report_content,
-file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
-mime="text/plain",
-key="download_button_unique"
-)
 
 #הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף בשתי השפות
 
