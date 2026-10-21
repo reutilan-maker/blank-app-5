@@ -14,13 +14,13 @@ def parse_sds_from_url(url):
         
         # ערכי ברירת מחדל במקרה של חוסר התאמה לתקן - ננעלים על אפס הגנה
         x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
-        extracted_name = "לא עומד בתנאי בסיס לאחסון ארכיוני / Non-Compliant"
+        extracted_name = "חומר ללא תקינת שימור מוכחת / Uncertified Material"
         is_compliant = False
         is_pat_certified = False
         
         # 1. בדיקת סיווג קינטי קשיח לנייר תרמי חומצי/נחות (נפסל מיידית)
         if "thermal" in text_lower or "thermal" in url_lower or "receipt" in text_lower:
-            extracted_name = "נייר תרמי / כימי חומצי (Thermal Substrate)"
+            extracted_name = "Appvion Thermal POS Paper (Non-Compliant)"
             x_cellulose, x_lignin, x_acid = 0.80, 0.15, 0.05
             is_compliant = False
             
@@ -151,7 +151,7 @@ Verified by Reut Ilan Shafik Framework, 2026."""
 # ממשק המשתמש אונליין (Streamlit UI)
 strl.set_page_config(page_title="מחשבון חמצון נייר ארכיוני", layout="centered")
 
-# הזרקת קוד CSS לחיוב יישור ימינה (RTL) מלא ועיצוב כתוביות המשנה באנגלית
+# הזרקת קוד CSS לחיוב יישור ימינה (RTL) מלא ועיצוב כתוביות המשנה באנגלית בשחור קטן
 strl.markdown(
     """
     <style>
@@ -164,7 +164,6 @@ strl.markdown(
     div[data-testid="stMetricValue"], div[data-testid="stMetricLabel"] { text-align: right !important; direction: RTL !important; }
     .copyright-box { background-color: #F7FAFC; border-right: 4px solid #2C5282; padding: 15px; margin-top: 40px; border-radius: 4px; }
     
-    /* עיצוב כתוביות תרגום שחורות קטנות באנגלית */
     .sub-eng {
         display: block;
         font-size: 13px;
@@ -177,8 +176,8 @@ strl.markdown(
     """, unsafe_allow_html=True
 )
 
-# כותרת ראשית כפולה בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
-strl.title("""Re-Oot \n אפליקציית חישוב קצב התחמצנות
+#  כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
+strl.title("""Re-Oot אפליקציית חישוב קצב התחמצנות
 נייר לארכיונים""")
 strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
@@ -188,28 +187,29 @@ strl.markdown("---")
 
 #  תיבת קלט ראשית לקישור ה-SDS
 strl.markdown('<b>הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):</b><span class="sub-eng">Paste SDS or Technical Specification URL here:</span>', unsafe_allow_html=True)
-url_input = strl.text_input("", value="https://klug-conservation.de", label_visibility="collapsed")
+url_input = strl.text_input("", value="https://klug-conservation.de", label_visibility="collapsed", key="url_input_unique_box")
 
 if url_input:
     # הרצת סריקת התקינה
-    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input)
+    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input, lang="he")
     
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
-    paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed")
-     # סליידר טמפרטורה
-    strl.markdown("""<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>""", unsafe_allow_html=True)
-    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_slider_unique")
+    paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed", key="paper_name_unique_box")
+    
+    # סליידר טמפרטורה
+    strl.markdown('<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>', unsafe_allow_html=True)
+    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_unique_slider")
     
     # סליידר לחות
-    strl.markdown("""<br><b>לחות יחסית במחסן (RH%):</b><span class="sub-eng">Testing Warehouse Relative Humidity (RH%):</span>""", unsafe_allow_html=True)
-    rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_slider_unique")
-
-rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
+strl.markdown('
+לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
+rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_unique_slider")
+# חישוב השנים במודל ארניוס
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
-# חיוויי בטיחות רגישים (PAT)
+# הקפצת חיוויי בטיחות רגישים (PAT) על בסיס הנתונים שחולצו
 if is_compliant and is_pat_certified:
-    strl.markdown(
+strl.markdown(
 f"""
 
 ✅ אישור הגנת מדיה: החומר עומד בתקן ISO 18916 (PAT Tested). בטוח לחלוטין לעיטוף ושימור של תצלומים צבעוניים ואמולסיות רגישות.
@@ -219,17 +219,17 @@ Media Protection Approved: Material complies with ISO 18916 (PAT Tested). Safe f
 """, unsafe_allow_html=True
 )
 elif is_compliant and not is_pat_certified:
-    strl.markdown(
+strl.markdown(
 f"""
 
-⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר עם תצלומים צבעוניים!
+⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר WITH תצלומים צבעוניים!
 
 Notice: Substrate is archive-approved (ISO 9706) but lacks PAT evaluation. Avoid direct contact with color photographs!
 
 """, unsafe_allow_html=True
 )
 if not is_compliant:
-    strl.markdown(
+strl.markdown(
 f"""
 
 ⚠️ אזהרת שימור: הקישור שהוזן לא נמצא כעומד בתקן המעבדה הבינלאומי המאושר ISO 9706 או הציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף פריטים יקרי ערך!
@@ -238,8 +238,9 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 
 """, unsafe_allow_html=True
 )
-# כותרת תוצאות שונות
-strl.markdown('חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):', unsafe_allow_html=True)
+# כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
+strl.markdown("""
+ חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
 col1, col2 = strl.columns(2)
 with col1:
     strl.markdown('### 🟦 מחסן חמצן רגיל (21%)Standard Atmosphere (21% O₂)', unsafe_allow_html=True)
@@ -252,13 +253,14 @@ strl.markdown("---")
 strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
 strl.code(report_content, language="text")
 strl.download_button(
-label=" הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
+label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
 data=report_content,
 file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
-mime="text/plain"
+mime="text/plain",
+key="download_button_unique"
 )
 
-#הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף
+#הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף בשתי השפות
 
 strl.markdown(
 """
