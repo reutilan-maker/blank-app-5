@@ -181,7 +181,7 @@ strl.markdown(
     """, unsafe_allow_html=True
 )
 
-# 🏛️ כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
+#  כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
 strl.title("""Re-Oot אפליקציית חישוב קצב התחמצנות
 נייר לארכיונים""")
 strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px; text-align: right;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
@@ -190,7 +190,7 @@ strl.markdown('<p class="sub-eng" style="margin-top:-10px;">Online framework for
 
 strl.markdown("---")
 
-# 📥 תיבת קלט ראשית לקישור ה-SDS
+#  תיבת קלט ראשית לקישור ה-SDS
 strl.markdown('<b>הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):</b><span class="sub-eng">Paste SDS or Technical Specification URL here:</span>', unsafe_allow_html=True)
 url_input = strl.text_input("", value="https://klug-conservation.de", label_visibility="collapsed", key="url_input_unique_box")
 
@@ -251,6 +251,7 @@ f"""
 Standard Atmosphere (21% O₂)
 חלון זמן בטוח / Safety Window
 {int(yrs_21)} שנים / Years
+
 🟩 מחסן מרודד חמצן
 Hypoxic Atmosphere (15% O₂)
 חלון זמן בטוח / Safety Window
