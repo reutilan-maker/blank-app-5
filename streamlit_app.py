@@ -20,7 +20,7 @@ def parse_sds_from_url(url):
         
         # 1. בדיקת סיווג קינטי קשיח לנייר תרמי חומצי/נחות (נפסל מיידית)
         if "thermal" in text_lower or "thermal" in url_lower or "receipt" in text_lower:
-            extracted_name = "Appvion Thermal POS Paper (Non-Compliant)"
+            extracted_name = "נייר תרמי / כימי חומצי (Thermal Substrate)"
             x_cellulose, x_lignin, x_acid = 0.80, 0.15, 0.05
             is_compliant = False
             
@@ -40,7 +40,7 @@ def parse_sds_from_url(url):
             else:
                 extracted_name = "נייר שימור מאושר תקן ISO 9706 / PAT Certified"
                 
-            # מזהה אם הנייר המאושר הוא נייר משי דק (Tissue)
+            # מזהה אם הנייר המאושר הוא נייר משי דק (Tissue) לקביעת אנטרופיה ו-GAB
             if "tissue" in text_lower or "seidenpapier" in text_lower:
                 is_tissue = True
                 extracted_name = "נייר משי ארכיוני מאושר תקן (Archival Tissue)"
@@ -79,14 +79,19 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
         
     R, T = 8.314, temp_c + 273.15
     Ea_total = (x_cellulose * 110000) + (x_lignin * 80000) - (15000 if x_acid > 0 else 0)
+    
+    # כיול אנטרופיה לפי סוג סיב להגנת תמונות צבעוניות
     dS = -60.0 if not is_tissue else -42.0
     A = ((1.380649e-23 * T) / 6.62607015e-34) * math.exp(dS / R)
+    
+    # כיול איזותרמת GAB לפי רגישות הסיב ללחות
     B = (0.03 if not is_tissue else 0.042) * (rh / 50.0)
     
     ln_k = math.log(A) - (Ea_total / (R * T)) + B
     ln_k_ref = math.log(A) - (Ea_total / (R * 293.15)) + ((0.03 if not is_tissue else 0.042) * 1.0)
     k_relative = math.exp(ln_k - ln_k_ref)
     
+    # הגדרת אורך חיים בסיסי לחלון ביטחון מוחלט (רגישות מקסימלית)
     base_lifetime = 200 if not is_tissue else 120
     k_hypoxic = k_relative * (15.0 / 21.0)
     years_21 = base_lifetime / k_relative
@@ -176,7 +181,7 @@ strl.markdown(
     """, unsafe_allow_html=True
 )
 
-#  כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
+# 🏛️ כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
 strl.title("""Re-Oot אפליקציית חישוב קצב התחמצנות
 נייר לארכיונים""")
 strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px; text-align: right;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
@@ -185,30 +190,30 @@ strl.markdown('<p class="sub-eng" style="margin-top:-10px;">Online framework for
 
 strl.markdown("---")
 
-#  תיבת קלט ראשית לקישור ה-SDS
+# 📥 תיבת קלט ראשית לקישור ה-SDS
 strl.markdown('<b>הדביקי כאן קישור ל-SDS או למפרט הטכני (URL):</b><span class="sub-eng">Paste SDS or Technical Specification URL here:</span>', unsafe_allow_html=True)
 url_input = strl.text_input("", value="https://klug-conservation.de", label_visibility="collapsed", key="url_input_unique_box")
 
 if url_input:
-    # הרצת סריקת התקינה
+    # הרצת סריקת התקינה המעבדתית
     x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input)
     
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
     paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed", key="paper_name_unique_box")
     
-    # סליידר טמפרטורה
-    strl.markdown('<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>', unsafe_allow_html=True)
-    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_unique_slider")
-    
-    # סליידר לחותstrl.markdown('
+    # סליידר טמפרטורה (ברירת מחדל לקיץ ישראלי 30 מעלות)
+
+strl.markdown('טמפרטורת המחסן בדיקה (°C):Testing Warehouse Temperature (°C):', unsafe_allow_html=True)
+temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_unique_slider")
+# סליידר לחות (ברירת מחדל לקיץ ישראלי 70% לחות)strl.markdown('
 לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_unique_slider")
-# חישוב השנים במודל ארניוס
+# חישוב השנים במודל ארניוס המורחב
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 # הקפצת חיוויי בטיחות רגישים (PAT) על בסיס הנתונים שחולצו
 if is_compliant and is_pat_certified:
-strl.markdown(
+    strl.markdown(
 f"""
 
 ✅ אישור הגנת מדיה: החומר עומד בתקן ISO 18916 (PAT Tested). בטוח לחלוטין לעיטוף ושימור של תצלומים צבעוניים ואמולסיות רגישות.
@@ -237,9 +242,10 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 
 """, unsafe_allow_html=True
 )
-# כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
-strl.markdown("""חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
-#  תיבה מעוצבת דו-עמודית אחידה ומיושרת באופן סימטרי לחלוטין
+# כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה ולייבל מקורי שלך
+strl.markdown("""
+ חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
+#  תיבה מעוצבת דו-עמודית אחידה, מיושרת אופקית סימטרית למרכז עם סוגריים מוקטנים ל-14 פיקסלים
 strl.markdown(
 f"""
 🟦 מחסן חמצן רגיל
@@ -262,4 +268,20 @@ data=report_content,
 file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain",
 key="download_button_unique"
+)
+
+הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף בשתי השפות חתומה על שמך המלא
+
+strl.markdown(
+"""
+
+
+© כל הזכויות שמורות לרעות אילן שפיק, 2026.
+
+קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב.
+
+© All Rights Reserved to Reut Ilan Shafik, 2026. The source code, interactive deployment framework, and the multi-layered dynamic kinetic core constitute trade secrets and protected intellectual property. Unauthorized reuse is strictly prohibited.
+
+
+""", unsafe_allow_html=True
 )
