@@ -191,7 +191,7 @@ url_input = strl.text_input("", value="https://klug-conservation.de", label_visi
 
 if url_input:
     # הרצת סריקת התקינה
-    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input, lang="he")
+    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input)
     
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
