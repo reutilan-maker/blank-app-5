@@ -190,7 +190,7 @@ else:
         "temp_lbl": "Testing Warehouse Temperature (°C)",
         "rh_lbl": "Testing Warehouse Relative Humidity (RH%)",
         "res_lbl": " Absolute Safety Window For Wrapping (Years Before Acid Migration):",
-Use code with caution.
+
 "m1_lbl": "### 🟦 Standard Atmosphere Warehouse (21% O₂)",
 "m2_lbl": "### 🟩 Hypoxic Atmosphere Warehouse (15% O₂)",
 "metric_lbl": "Safety Window",
