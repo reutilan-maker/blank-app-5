@@ -216,7 +216,7 @@ paper_name_input = strl.text_input(current_labels["name_lbl"], value=auto_paper_
 temp_input = strl.slider(current_labels["temp_lbl"], 10, 45, 30)
 rh_input = strl.slider(current_labels["rh_lbl"], 10, 90, 70)
 if url_input:
-    # חישוב הליבה הכימית-קינטית
+        # חישוב הליבה הכימית-קינטית
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 # הקפצת קופסת התרעה אדומה במקרה של פסילת הנייר (רק אם is_compliant הוא False)
 if not is_compliant:
