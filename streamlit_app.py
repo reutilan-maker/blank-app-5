@@ -239,8 +239,7 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 """, unsafe_allow_html=True
 )
 # כותרת תוצאות שונות
-strl.markdown('
- חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):', unsafe_allow_html=True)
+strl.markdown('חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):', unsafe_allow_html=True)
 col1, col2 = strl.columns(2)
 with col1:
     strl.markdown('### 🟦 מחסן חמצן רגיל (21%)Standard Atmosphere (21% O₂)', unsafe_allow_html=True)
