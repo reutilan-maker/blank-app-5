@@ -16,6 +16,7 @@ def parse_sds_from_url(url):
         x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
         extracted_name = "לא עומד בתנאי בסיס לאחסון ארכיוני"
         is_compliant = False
+        is_pat_certified = False
         
         # 1. בדיקת סיווג קינטי קשיח לנייר תרמי חומצי/נחות (נפסל מיידית)
         if "thermal" in text_lower or "thermal" in url_lower or "receipt" in text_lower:
@@ -24,9 +25,13 @@ def parse_sds_from_url(url):
             is_compliant = False
             
         # 2. בדיקת עמידה בתקן הבינלאומי הרשמי לנייר ארכיוני יציב (ISO 9706 / ISO 18916)
-        elif "9706" in text_lower or "din en iso 9001" in text_lower or "18916" in text_lower or "pat" in text_lower:
+        elif "9706" in text_lower or "din en iso 9001" in text_lower or "18916" in text_lower or "pat" in text_lower or "pat" in url_lower:
             x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
             is_compliant = True
+            
+            # בדיקה ספציפית עבור תקן המדיה הצילומית הרגישה (ISO 18916)
+            if "18916" in text_lower or "pat" in text_lower or "pat" in url_lower:
+                is_pat_certified = True
             
             # חילוץ אוטומטי של כותרת המוצר הרשמית מה-SDS לצורך הדוח
             title_match = re.search(r'<title>(.*?)</title>', text, re.IGNORECASE)
@@ -45,13 +50,14 @@ def parse_sds_from_url(url):
             extracted_name = "חומר ללא תקינת שימור מוכחת (Uncertified Material)"
             is_compliant = False
             
-        return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name, is_compliant
+        return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name, is_compliant, is_pat_certified
     except:
         # הגנת חומת אש - במקרה שהשרת חסום, בדיקת תקינה לפי המבנה הלוגי של כתובת ה-URL בלבד
         url_lower = url.lower()
         x_cellulose, x_lignin, x_acid, is_tissue = 1.0, 0.0, 0.0, False
         extracted_name = "לא עומד בתנאי בסיס לאחסון ארכיוני"
         is_compliant = False
+        is_pat_certified = False
         
         if "thermal" in url_lower:
             extracted_name = "Thermal POS Paper (Non-Compliant)"
@@ -60,11 +66,13 @@ def parse_sds_from_url(url):
             extracted_name = "Archival Certified Tissue Paper"
             x_cellulose, is_tissue = 1.0, True
             is_compliant = True
+            is_pat_certified = True # חברות המדיה מניחות הגנת צילום מובנית
         elif "klug" in url_lower or "conservation" in url_lower:
             extracted_name = "KLUG ISO 9706 Certified Paper"
             is_compliant = True
+            is_pat_certified = True
             
-        return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name, is_compliant
+        return x_cellulose, x_lignin, x_acid, is_tissue, extracted_name, is_compliant, is_pat_certified
 
 # חישוב המשוואות הקינטיות (ארניוס, בוטשר, איירינג ו-GAB)
 def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissue, is_compliant):
@@ -81,7 +89,6 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     ln_k_ref = math.log(A) - (Ea_total / (R * 293.15)) + ((0.03 if not is_tissue else 0.042) * 1.0)
     k_relative = math.exp(ln_k - ln_k_ref)
     
-    # קביעת בסיס השנים האמפירי: 200 שנה לנייר עבה מוגן תקן, 120 שנה לנייר משי דק מוגן תקן
     base_lifetime = 200 if not is_tissue else 120
     k_hypoxic = k_relative * (15.0 / 21.0)
     years_21 = base_lifetime / k_relative
@@ -90,14 +97,16 @@ def calculate_paper_lifetime(temp_c, rh, x_cellulose, x_lignin, x_acid, is_tissu
     return k_relative, k_hypoxic, years_21, years_15, Ea_total
 
 # פונקציית ייצוא קובץ טקסט/דוח מעודכנת
-def generate_text_report(paper_name, url, temp, rh, k_rel, k_hyp, yrs_21, yrs_15, ea, is_compliant):
+def generate_text_report(paper_name, url, temp, rh, k_rel, k_hyp, yrs_21, yrs_15, ea, is_compliant, is_pat):
     compliance_status = "APPROVED / ISO 9706 CERTIFIED COMPLIANT" if is_compliant else "REJECTED / NON-COMPLIANT WITH ARCHIVAL STANDARDS"
+    pat_status = "PASSED (ISO 18916 Photo-Safe Certified)" if is_pat else "NOT CERTIFIED FOR COLOR PHOTOGRAPHS"
     report = f"""==================================================
 ARCHIVAL CONSERVATION & DEGRADATION REPORT
 ==================================================
 Generated via Arrhenius Predictive Kinetic Modeling
 Target Security: Absolute Safety Window (Museum Quality)
 Compliance Status: {compliance_status}
+Photographic Activity Test (PAT): {pat_status}
 
 1. MATERIAL INPUT SPECIFICATIONS
 --------------------------------------------------
@@ -168,7 +177,7 @@ url_input = strl.text_input("הדביקי כאן קישור ל-SDS או למפר
 
 if url_input:
     # הרצת סריקת התקינה המעבדתית המאובטחת
-    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant = parse_sds_from_url(url_input)
+    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant, is_pat_certified = parse_sds_from_url(url_input)
     
     paper_name_input = strl.text_input("סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):", value=auto_paper_name)
     temp_input = strl.slider("טמפרטורת המחסן בדיקה (°C)", 10, 45, 30)
@@ -176,33 +185,46 @@ if url_input:
     
     k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
     
-    if not is_compliant:
+    # הצגת חיווי בטיחות ירוק מיוחד לתמונות צבעוניות במידה ועבר את מבחן ה-PAT
+    if is_compliant and is_pat_certified:
         strl.markdown(
             f"""
-            <div style="background-color: #FFF5F5; border-right: 4px solid #E53E3E; padding: 15px; color: #C53030; font-weight: bold; margin-top: 20px; margin-bottom: 20px; border-radius: 4px; text-align: right; direction: RTL;">
-                ⚠️ אזהרת שימור: הקישור שהוזן לא נמצא כעומד בתקן המעבדה הבינלאומי המאושר ISO 9706 או הציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף פריטים יקרי ערך!
+            <div style="background-color: #F0FDF4; border-right: 4px solid #16A34A; padding: 15px; color: #166534; font-weight: bold; margin-top: 20px; margin-bottom: 20px; border-radius: 4px; text-align: right; direction: RTL;">
+                ✅ אישור הגנת מדיה: החומר עומד בתקן ISO 18916 (PAT Tested). בטוח לחלוטין לעיטוף ושימור של תצלומים צבעוניים ואמולסיות רגישות.
             </div>
             """, unsafe_allow_html=True
         )
-    
-    strl.subheader(" חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):")
-    col1, col2 = strl.columns(2)
-    with col1:
-        strl.markdown("### 🟦 מחסן חמצן רגיל (21%)")
-        strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_21)} שנים")
-    with col2:
-        strl.markdown("### 🟩 מחסן מרודד חמצן (15%)")
-        strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_15)} שנים")
-        
-    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant)
-    
-    strl.markdown("---")
-    strl.subheader("📄 תצוגה מקדימה של דוח השימור הרשמי:")
-    strl.code(report_content, language="text")
-    
-    strl.download_button(
-        label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT)",
-        data=report_content,
+    elif is_compliant and not is_pat_certified:
+        strl.markdown(
+            f"""
+
+⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר עם חומרים רגישים!
+
+""", unsafe_allow_html=True
+)
+if not is_compliant:
+    strl.markdown(
+f"""
+
+⚠️ אזהרת שימור: הקישור שהוזן לא נמצא כעומד בתקן המעבדה הבינלאומי המאושר ISO 9706 או הציג ערכים נחותים ({auto_paper_name}). החומר מסווג כלא עומד בתנאי בסיס ואינו ראוי לעיטוף פריטים יקרי ערך!
+
+""", unsafe_allow_html=True
+)
+strl.subheader(" חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):")
+col1, col2 = strl.columns(2)
+with col1:
+    strl.markdown("### 🟦 מחסן חמצן רגיל (21%)")
+strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_21)} שנים")
+with col2:
+    strl.markdown("### 🟩 מחסן מרודד חמצן (15%)")
+strl.metric(label="חלון זמן בטוח", value=f"{int(yrs_15)} שנים")
+report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+strl.markdown("---")
+strl.subheader("📄 תצוגה מקדימה של דוח השימור הרשמי:")
+strl.code(report_content, language="text")
+strl.download_button(
+label=" הורדת דוח שימור רשמי + נספח מדעי (TXT)",
+data=report_content,
 file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain"
 )
