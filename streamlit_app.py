@@ -221,7 +221,7 @@ f"""
 strl.subheader(labels["res_lbl"])
 col1, col2 = strl.columns(2)
 with col1:
-strl.markdown(labels["m1_lbl"])
+    strl.markdown(labels["m1_lbl"])
 strl.metric(label=labels["metric_lbl"], value=f"{int(yrs_21)} Years" if lang == "English" else f"{int(yrs_21)} שנים")
 with col2:
 strl.markdown(labels["m2_lbl"])
