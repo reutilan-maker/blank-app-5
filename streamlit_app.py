@@ -195,7 +195,7 @@ btn_lbl = " Download Conservation Report + Kinetic Appendix (TXT)"
 warn_lbl = f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!"
 cr_text = "© All Rights Reserved to Reut Ilan Shafik, 2026. The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
 
-הדפסת הכותרות המרכזיות על המסך
+#הדפסת הכותרות המרכזיות על המסך
 
 strl.title(title_text)
 strl.markdown(sub_text)
