@@ -177,8 +177,9 @@ strl.markdown(
 )
 
 #  כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
-strl.title("""Re-Oot \n אפליקציית חישוב קצב התחמצנות נייר לארכיונים""")
-strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
+strl.title("""Re-Oot אפליקציית חישוב קצב התחמצנות
+נייר לארכיונים""")
+strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px; text-align: right;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 strl.markdown('<p class="sub-eng" style="margin-top:-10px;">Online framework for evaluating the absolute safety window of wrapping materials via Arrhenius metrics.</p>', unsafe_allow_html=True)
 
@@ -195,18 +196,19 @@ if url_input:
     # שם הנייר
     strl.markdown('<br><b>סיווג החומר ותקינת המעבדה (חולץ אוטומטית, ניתן לעריכה):</b><span class="sub-eng">Material classification & lab standards (Auto-extracted, editable):</span>', unsafe_allow_html=True)
     paper_name_input = strl.text_input("", value=auto_paper_name, label_visibility="collapsed", key="paper_name_unique_box")
-  # סליידר טמפרטורה
-    strl.markdown("""<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>""", unsafe_allow_html=True)
-    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_slider_unique")
     
-    # סליידר לחות
-    strl.markdown("""<br><b>לחות יחסית במחסן (RH%):</b><span class="sub-eng">Testing Warehouse Relative Humidity (RH%):</span>""", unsafe_allow_html=True)
-    rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_slider_unique")
+    # סליידר טמפרטורה
+    strl.markdown('<br><b>טמפרטורת המחסן בדיקה (°C):</b><span class="sub-eng">Testing Warehouse Temperature (°C):</span>', unsafe_allow_html=True)
+    temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed", key="temp_unique_slider")
+    
+    # סליידר לחותstrl.markdown('
+לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
+rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed", key="rh_unique_slider")
 # חישוב השנים במודל ארניוס
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 # הקפצת חיוויי בטיחות רגישים (PAT) על בסיס הנתונים שחולצו
 if is_compliant and is_pat_certified:
-    strl.markdown(
+strl.markdown(
 f"""
 
 ✅ אישור הגנת מדיה: החומר עומד בתקן ISO 18916 (PAT Tested). בטוח לחלוטין לעיטוף ושימור של תצלומים צבעוניים ואמולסיות רגישות.
@@ -219,7 +221,7 @@ elif is_compliant and not is_pat_certified:
     strl.markdown(
 f"""
 
-⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר WITH תצלומים צבעוניים!
+⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר עם תצלומים צבעוניים!
 
 Notice: Substrate is archive-approved (ISO 9706) but lacks PAT evaluation. Avoid direct contact with color photographs!
 
@@ -236,62 +238,28 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 """, unsafe_allow_html=True
 )
 # כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
-    # כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
-    strl.markdown("""<br><h3>📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):</h3><p class="sub-eng" style="margin-top:-10px;">Predicted Safety Window (Years Before Critical Acid Migration):</p>""", unsafe_allow_html=True)
-    
-    # 🌟 תיקון מבנה העמודות המקבילות באמצעות HTML מובנה - להצגה מושלמת ומיושרת למרכז ללא ערבוב אותיות
-    strl.markdown(
-        f"""
-        <div style="display: flex; justify-content: space-between; gap: 20px; width: 100%; margin-top: 15px; margin-bottom: 25px;">
-            
-            <!-- עמודה ימנית: מחסן חמצן רגיל -->
-            <div style="flex: 1; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; text-align: center; direction: RTL;">
-                <h3 style="margin: 0; color: #1E3A8A; font-size: 22px;">🟦 מחסן חמצן רגיל</h3>
-                <p style="margin: 2px 0 0 0; color: #4A5568; font-size: 16px; font-weight: bold;">Standard Atmosphere <span style="font-size: 14px; font-weight: normal; color: #718096;">(21% O₂)</span></p>
-                <div style="margin-top: 15px; font-size: 13px; color: #718096;">חלון זמן בטוח / Safety Window</div>
-                <div style="font-size: 36px; font-weight: bold; color: #1A365D; margin-top: 5px;">{int(yrs_21)} שנים / Years</div>
-            </div>
-            
-            <!-- עמודה שמאלית: מחסן מרודד חמצן -->
-            <div style="flex: 1; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; text-align: center; direction: RTL;">
-                <h3 style="margin: 0; color: #166534; font-size: 22px;">🟩 מחסן מרודד חמצן</h3>
-                <p style="margin: 2px 0 0 0; color: #4A5568; font-size: 16px; font-weight: bold;">Hypoxic Atmosphere <span style="font-size: 14px; font-weight: normal; color: #718096;">(15% O₂)</span></p>
-                <div style="margin-top: 15px; font-size: 13px; color: #718096;">חלון זמן בטוח / Safety Window</div>
-                <div style="font-size: 36px; font-weight: bold; color: #14532D; margin-top: 5px;">{int(yrs_15)} שנים / Years</div>
-            </div>
-            
-        </div>
-        """, unsafe_allow_html=True
-    )
-        
-    # הפקת תוכן הדוח הכתוב מתוך פונקציית הייצוא הכימית
-    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
-    
-    strl.markdown("---")
-    strl.markdown('<b>📄 תצוגה מקדימה של דוח השימור הרשמי:</b><span class="sub-eng">Official Conservation Report Preview:</span>', unsafe_allow_html=True)
-    strl.code(report_content, language="text")
-    
-    strl.download_button(
-        label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
-        data=report_content,
-        file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
-        mime="text/plain",
-        key="download_button_unique"
-    )
-
-
-#הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף בשתי השפות
-
+strl.markdown("""חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
+#  תיבה מעוצבת דו-עמודית אחידה ומיושרת באופן סימטרי לחלוטין
 strl.markdown(
-"""
-
-
-© כל הזכויות שמורות לרעות אילן שפיק, 2026.
-
-קוד המקור, הממשק האינטראקטיבי ושילוב המודלים הקינטיים (ארניוס, בוטשר, איירינג ו-GAB) באפליקציה זו מהווים קניין רוחני בלעדי וסוד מסחרי מוגן. אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בכלי זה או בדוחות המופקים ממנו ללא אישור מפורש בכתב.
-
-© All Rights Reserved to Reut Ilan Shafik, 2026. The source code, interactive deployment framework, and the multi-layered dynamic kinetic core constitute trade secrets and protected intellectual property. Unauthorized reuse is strictly prohibited.
-
-
+f"""
+🟦 מחסן חמצן רגיל
+Standard Atmosphere (21% O₂)
+חלון זמן בטוח / Safety Window
+{int(yrs_21)} שנים / Years
+🟩 מחסן מרודד חמצן
+Hypoxic Atmosphere (15% O₂)
+חלון זמן בטוח / Safety Window
+{int(yrs_15)} שנים / Years
 """, unsafe_allow_html=True
+)
+report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+strl.markdown("---")
+strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
+strl.code(report_content, language="text")
+strl.download_button(
+label=" הורדת דוח שימור רשמי + נספח מדעי (TXT) / Download Report",
+data=report_content,
+file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
+mime="text/plain",
+key="download_button_unique"
 )
