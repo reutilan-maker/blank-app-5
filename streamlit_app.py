@@ -147,7 +147,7 @@ def relative_temperature_factor(temp_c, reference_c, activation_energy_kj):
     r = 8.314462618
     t, t_ref = temp_c + 273.15, reference_c + 273.15
     return math.exp((activation_energy_kj * 1000 / r) * (1 / t_ref - 1 / t))
-
+strl.subheader(current_labels["info_src_lbl"])
 "info_src_lbl": "1. 1 מקור המידע. Document source",
 
 url = st.text_input(tr("קישור ישיר למפרט טכני / SDS / דף מוצר", "Direct link to technical sheet / SDS / product page"),
