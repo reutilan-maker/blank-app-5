@@ -279,7 +279,7 @@ with col2:
 strl.markdown('### 🟩 מחסן מרודד חמצן Hypoxic Atmosphere (15% O₂)', unsafe_allow_html=True)
 strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_15)} שנים / Years")
 strl.markdown('', unsafe_allow_html=True)        
-    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
 strl.markdown("---")
 strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
 strl.code(report_content, language="text")
