@@ -267,19 +267,20 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
         """, unsafe_allow_html=True
     )
     
-    # הצגת התוצאות המקוריות והברורות אחת ליד השנייה בעמודות רשמיות ומיושרות למרכז
-    col1, col2 = strl.columns(2)
-    with col1:
-        strl.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-        strl.markdown('### 🟦 מחסן חמצן רגיל<br><span class="sub-eng" style="text-align:center; font-size:14px; font-weight:normal; margin-top:-5px;">Standard Atmosphere <span style="font-size:12px; color:#718096;">(21% O₂)</span></span>', unsafe_allow_html=True)
-        strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_21)} שנים / Years")
-        strl.markdown('</div>', unsafe_allow_html=True)
-    with col2:
-        strl.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-        strl.markdown('### 🟩 מחסן מרודד חמצן<br><span class="sub-eng" style="text-align:center; font-size:14px; font-weight:normal; margin-top:-5px;">Hypoxic Atmosphere <span style="font-size:12px; color:#718096;">(15% O₂)</span></span>', unsafe_allow_html=True)
-        strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_15)} שנים / Years")
-        strl.markdown('</div>', unsafe_allow_html=True)
-        
+    # # הצגת התוצאות המקוריות והברורות אחת ליד השנייה בעמודות רשמיות ומיושרות למרכז
+col1, col2 = strl.columns(2)
+with col1:
+    strl.markdown('', unsafe_allow_html=True)
+strl.markdown('### 🟦 מחסן חמצן רגיל
+Standard Atmosphere (21% O₂)', unsafe_allow_html=True)
+strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_21)} שנים / Years")
+strl.markdown('', unsafe_allow_html=True)
+with col2:
+    strl.markdown('', unsafe_allow_html=True)
+strl.markdown('### 🟩 מחסן מרודד חמצן
+Hypoxic Atmosphere (15% O₂)', unsafe_allow_html=True)
+strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_15)} שנים / Years")
+strl.markdown('', unsafe_allow_html=True)        
     report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
 strl.markdown("---")
 strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
