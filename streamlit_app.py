@@ -219,7 +219,7 @@ Media Protection Approved: Material complies with ISO 18916 (PAT Tested). Safe f
 """, unsafe_allow_html=True
 )
 elif is_compliant and not is_pat_certified:
-strl.markdown(
+    strl.markdown(
 f"""
 
 ⚠️ שים לב: הנייר מאושר ארכיונית (ISO 9706) אך לא נמצא בו חיווי למבחן PAT. מומלץ לא להשתמש בו במגע ישיר עם תצלומים צבעוניים!
