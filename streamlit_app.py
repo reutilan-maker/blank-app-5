@@ -202,7 +202,7 @@ strl.title(labels["title"])
 strl.markdown(labels["sub"])
 url_input = strl.text_input(labels["url_lbl"], value="klug-conservation.de")
 if url_input:
-x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant = parse_sds_from_url(url_input, lang)
+    x_cell, x_lig, x_ac, is_tiss, auto_paper_name, is_compliant = parse_sds_from_url(url_input, lang)
 paper_name_input = strl.text_input(labels["name_lbl"], value=auto_paper_name)
 temp_input = strl.slider(labels["temp_lbl"], 10, 45, 30)
 rh_input = strl.slider(labels["rh_lbl"], 10, 90, 70)
