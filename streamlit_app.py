@@ -117,11 +117,9 @@ This analytical tool utilizes a multi-layered thermodynamic model:
 2. EYRING-POLANYI EQUATION (Frequency Factor Evaluation)
    Resolves the molecular collision pre-exponential factor (A).
    Formula: A = (kb * T / h) * exp(dS / R)
-
 3. GUGGENHEIM-ANDERSON-DE BOER (GAB) ABSORPTION ISOTHERM
    Translates ambient relative humidity into bound chemical water.
    Formula: B = C_hydro * f(RH)
-
 4. HUMIDITY-CORRECTED ARRHENIUS EQUATION (Core Solution)
    Integrates all matrices to output final wrapping shelf-life.
    Formula: ln(k) = ln(A) - (Ea_total / R*T) + B * RH
