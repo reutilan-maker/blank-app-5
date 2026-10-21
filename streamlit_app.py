@@ -236,16 +236,36 @@ Conservation Warning: Link is non-compliant with ISO 9706 standard. Substrate is
 """, unsafe_allow_html=True
 )
 # כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
-strl.markdown("""
- חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):Predicted Safety Window (Years Before Critical Acid Migration):""", unsafe_allow_html=True)
-col1, col2 = strl.columns(2)
-with col1:
-    strl.markdown('### 🟦 מחסן חמצן רגיל (21%)Standard Atmosphere (21% O₂)', unsafe_allow_html=True)
-strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_21)} שנים / Years")
-with col2:
-    strl.markdown('### 🟩 מחסן מרודד חמצן (15%)Hypoxic Atmosphere (15% O₂)', unsafe_allow_html=True)
-strl.metric(label="חלון זמן בטוח / Safety Window", value=f"{int(yrs_15)} שנים / Years")
-report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+    # כותרת תוצאות שונות במרכז הדף במבנה חסין שבירה
+    strl.markdown("""<br><h3>📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):</h3><p class="sub-eng" style="margin-top:-10px;">Predicted Safety Window (Years Before Critical Acid Migration):</p>""", unsafe_allow_html=True)
+    
+    # 🌟 תיקון מבנה העמודות המקבילות באמצעות HTML מובנה - להצגה מושלמת ומיושרת למרכז ללא ערבוב אותיות
+    strl.markdown(
+        f"""
+        <div style="display: flex; justify-content: space-between; gap: 20px; width: 100%; margin-top: 15px; margin-bottom: 25px;">
+            
+            <!-- עמודה ימנית: מחסן חמצן רגיל -->
+            <div style="flex: 1; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; text-align: center; direction: RTL;">
+                <h3 style="margin: 0; color: #1E3A8A; font-size: 22px;">🟦 מחסן חמצן רגיל</h3>
+                <p style="margin: 2px 0 0 0; color: #4A5568; font-size: 16px; font-weight: bold;">Standard Atmosphere <span style="font-size: 14px; font-weight: normal; color: #718096;">(21% O₂)</span></p>
+                <div style="margin-top: 15px; font-size: 13px; color: #718096;">חלון זמן בטוח / Safety Window</div>
+                <div style="font-size: 36px; font-weight: bold; color: #1A365D; margin-top: 5px;">{int(yrs_21)} שנים / Years</div>
+            </div>
+            
+            <!-- עמודה שמאלית: מחסן מרודד חמצן -->
+            <div style="flex: 1; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; text-align: center; direction: RTL;">
+                <h3 style="margin: 0; color: #166534; font-size: 22px;">🟩 מחסן מרודד חמצן</h3>
+                <p style="margin: 2px 0 0 0; color: #4A5568; font-size: 16px; font-weight: bold;">Hypoxic Atmosphere <span style="font-size: 14px; font-weight: normal; color: #718096;">(15% O₂)</span></p>
+                <div style="margin-top: 15px; font-size: 13px; color: #718096;">חלון זמן בטוח / Safety Window</div>
+                <div style="font-size: 36px; font-weight: bold; color: #14532D; margin-top: 5px;">{int(yrs_15)} שנים / Years</div>
+            </div>
+            
+        </div>
+        """, unsafe_allow_html=True
+    )
+        
+    report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant, is_pat_certified)
+
 strl.markdown("---")
 strl.markdown('📄 תצוגה מקדימה של דוח השימור הרשמי:Official Conservation Report Preview:', unsafe_allow_html=True)
 strl.code(report_content, language="text")
