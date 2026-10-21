@@ -199,8 +199,7 @@ else:
 "cr_text": """© All Rights Reserved, 2026.
 The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."""
 }
-current_labels = labels["he" if lang == "עברית" else "en"]
-
+current_labels = labels[lang]
 strl.title(current_labels["title"])
 strl.markdown(current_labels["sub"])
 
