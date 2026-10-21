@@ -224,7 +224,7 @@ with col1:
     strl.markdown(labels["m1_lbl"])
 strl.metric(label=labels["metric_lbl"], value=f"{int(yrs_21)} Years" if lang == "English" else f"{int(yrs_21)} שנים")
 with col2:
-strl.markdown(labels["m2_lbl"])
+    strl.markdown(labels["m2_lbl"])
 strl.metric(label=labels["metric_lbl"], value=f"{int(yrs_15)} Years" if lang == "English" else f"{int(yrs_15)} שנים")
 report_content = generate_text_report(paper_name_input, url_input, temp_input, rh_input, k_rel, k_hyp, yrs_21, yrs_15, ea_total, is_compliant)
 strl.markdown("---")
