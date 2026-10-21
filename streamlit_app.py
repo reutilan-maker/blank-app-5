@@ -148,7 +148,8 @@ def relative_temperature_factor(temp_c, reference_c, activation_energy_kj):
     t, t_ref = temp_c + 273.15, reference_c + 273.15
     return math.exp((activation_energy_kj * 1000 / r) * (1 / t_ref - 1 / t))
 
-st.subheader(tr("1. מקור המידע", "1. Document source"))
+"info_src_lbl": "1. 1 מקור המידע. Document source",
+
 url = st.text_input(tr("קישור ישיר למפרט טכני / SDS / דף מוצר", "Direct link to technical sheet / SDS / product page"),
                     placeholder="https://example.org/product-specification.pdf")
 upload = st.file_uploader(tr("או העלאת קובץ PDF", "Or upload a PDF"), type=["pdf"])
@@ -172,7 +173,8 @@ if st.button(tr("🔎 חילוץ נתונים", "🔎 Extract document data"), t
             if not doc_text.strip():
                 raise ValueError("No selectable text found. Scanned PDFs require OCR.")
             st.session_state.doc_result = {
-                "source": source, "type": doc_type, "text": doc_text,
+              "info_src_lbl": "1. 1 Document source",
+
                 "evidence": evidence_lines(doc_text),
             }
             st.success(tr("המסמך נקרא. בדקי את הראיות והשלימי פרטים ידנית.",
