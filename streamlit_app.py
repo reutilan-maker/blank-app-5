@@ -177,8 +177,7 @@ strl.markdown(
 )
 
 #  כותרת ראשית רשמית בשתי שורות בעברית עם אנגלית קטנה שחורה למטה
-strl.title("""Re-Oot אפליקציית חישוב קצב התחמצנות
-נייר לארכיונים""")
+strl.title("""Re-Oot \n אפליקציית חישוב קצב התחמצנות נייר לארכיונים""")
 strl.markdown('<p style="color:#000000; font-size:14px; margin-top:-10px;">Paper Oxidation & Degradation Calculator for Archives</p>', unsafe_allow_html=True)
 strl.markdown("מערכת אונליין לחישוב חלון הביטחון המוחלט של חומרי עיטוף על בסיס משוואת ארניוס.")
 strl.markdown('<p class="sub-eng" style="margin-top:-10px;">Online framework for evaluating the absolute safety window of wrapping materials via Arrhenius metrics.</p>', unsafe_allow_html=True)
