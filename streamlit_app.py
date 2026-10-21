@@ -203,7 +203,6 @@ if url_input:
     strl.download_button(
         label="📥 הורדת דוח שימור רשמי + נספח מדעי (TXT)",
         data=report_content,
-Use code with caution.
 file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain"
 )
