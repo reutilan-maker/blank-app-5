@@ -203,8 +203,7 @@ else:
 "preview_lbl": "📄 Technical Conservation Report Preview:",
 "btn_lbl": " Download Conservation Report + Kinetic Appendix (TXT)",
 "warn_text": f"⚠️ CONSERVATION WARNING: The linked substrate ({auto_paper_name}) is classified as NON-COMPLIANT and unsafe for wrapping high-value artifacts!",
-"cr_text": "© All Rights Reserved to Reut Ilan Shafik, 2026.
-The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
+"cr_text": "© All Rights Reserved to Reut Ilan Shafik, 2026. The source code, interactive deployment framework, and the multi-layered dynamic kinetic core (Arrhenius, Bottcher, Eyring, GAB) of this application constitute trade secrets and protected intellectual property. Unauthorized copying, distribution, or commercial reuse of this tool or its generated reports is strictly prohibited."
 }
 current_labels = labels[lang]
 
@@ -254,7 +253,7 @@ file_name=f"Degradation_Report_{paper_name_input.replace(' ', '_')}.txt",
 mime="text/plain"
 )
 
-הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף
+#הצגת פסקת זכויות היוצרים המשפטיות בתחתית הדף
 
 strl.markdown(
 f"""
