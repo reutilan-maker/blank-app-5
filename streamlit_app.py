@@ -208,7 +208,7 @@ temp_input = strl.slider(labels["temp_lbl"], 10, 45, 30)
 rh_input = strl.slider(labels["rh_lbl"], 10, 90, 70)
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
 if not is_compliant:
-border_side = "border-right" if lang == "עברית" else "border-left"
+    border_side = "border-right" if lang == "עברית" else "border-left"
 align_side = "right" if lang == "עברית" else "left"
 dir_side = "RTL" if lang == "עברית" else "LTR"
 strl.markdown(
