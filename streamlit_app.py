@@ -203,7 +203,8 @@ if url_input:
     temp_input = strl.slider("", 10, 45, 30, label_visibility="collapsed")
     
     # סליידר לחות
-strl.markdown('
+    # כותרת תוצאות שונות
+    strl.markdown("""<br><h3>📊 חלון זמן בטוח לעיטוף (שנים לפני פליטת חומצה ופריכות):</h3><p class="sub-eng" style="margin-top:-10px;">Predicted Safety Window (Years Before Critical Acid Migration):</p>""", unsafe_allow_html=True)
 לחות יחסית במחסן (RH%):Testing Warehouse Relative Humidity (RH%):', unsafe_allow_html=True)
 rh_input = strl.slider("", 10, 90, 70, label_visibility="collapsed")
 k_rel, k_hyp, yrs_21, yrs_15, ea_total = calculate_paper_lifetime(temp_input, rh_input, x_cell, x_lig, x_ac, is_tiss, is_compliant)
